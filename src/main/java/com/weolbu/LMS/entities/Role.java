@@ -1,13 +1,17 @@
 package com.weolbu.LMS.entities;
 
+import com.weolbu.LMS.enums.MemberType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,12 +20,13 @@ import javax.persistence.Id;
 @Getter @Setter
 @Builder
 @AllArgsConstructor @NoArgsConstructor
-public class Authority {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "authority_id")
+    @Column(name = "role_id")
     private Long id;
 
-    @Column(name="authority_name")
-    private String authorityName;
+    @Column(name="member_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MemberType memberType;
 }

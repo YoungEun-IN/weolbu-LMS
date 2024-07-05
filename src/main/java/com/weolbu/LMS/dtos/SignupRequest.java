@@ -1,14 +1,17 @@
 package com.weolbu.LMS.dtos;
 
 import com.weolbu.LMS.entities.Member;
+import com.weolbu.LMS.enums.MemberType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class SignupRequest {
 
@@ -27,11 +30,5 @@ public class SignupRequest {
     @Pattern(regexp = "^(01[016789])-?\\d{3,4}-?\\d{4}$")
     private String phoneNumber;
 
-    public Member toEntity(PasswordEncoder passwordEncoder) {
-        return Member.builder()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .name(name)
-                .build();
-    }
+    private MemberType memberType;
 }

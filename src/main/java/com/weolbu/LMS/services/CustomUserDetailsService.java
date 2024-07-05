@@ -23,14 +23,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(final String email) {
-        return memberRepository.findOneWithAuthoritiesByEmail(email)
+        return memberRepository.findOneWithRolesByEmail(email)
                 .map(this::getUser)
-                .orElseThrow(() -> new UsernameNotFoundException(email + " -> 데이터베이스에서 찾을 수 없습니다."));
+                .orElseThrow(() -> new UsernameNotFoundException(email + " -> 사용자를 찾을 수 없습니다."));
     }
 
     private User getUser(Member member) {
-        List<GrantedAuthority> grantedAuthorities = member.getAuthorities().stream()
-                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
+        List<GrantedAuthority> grantedAuthorities = member.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getMemberType().toString()))
                 .collect(Collectors.toList());
         return new User(member.getEmail(),
                 member.getPassword(),

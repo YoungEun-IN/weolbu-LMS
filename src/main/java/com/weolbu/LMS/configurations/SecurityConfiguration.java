@@ -35,7 +35,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
         web.ignoring()
                 .antMatchers(
-                        "/members",
+                        "/members/**",
                         "/h2-console/**",
                         "/swagger-ui/**",
                         "/swagger-resources/**",
