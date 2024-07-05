@@ -18,7 +18,6 @@ import java.util.Set;
 
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
@@ -26,7 +25,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Member create(SignupRequest signupRequest) {
+    public void create(SignupRequest signupRequest) {
         validateEmail(signupRequest.getEmail());
 
         Member member = Member.builder()
@@ -36,7 +35,7 @@ public class MemberService {
                 .password(passwordEncoder.encode(signupRequest.getPassword()))
                 .build();
 
-        return memberRepository.save(member);
+        memberRepository.save(member);
     }
 
     private Role getRole(SignupRequest signupRequest) {

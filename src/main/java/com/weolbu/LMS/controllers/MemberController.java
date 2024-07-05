@@ -51,7 +51,7 @@ public class MemberController {
     @ApiOperation(value = "회원 생성", notes = "회원을 생성한다.")
     @PostMapping("")
     public ResponseEntity<String> create(@ApiParam(value = "회원", required = true) @RequestBody @Valid SignupRequest signupRequest) {
-        Member member = memberService.create(signupRequest);
+        memberService.create(signupRequest);
         return new ResponseEntity<>("회원 가입 완료되었습니다.", HttpStatus.CREATED);
     }
 

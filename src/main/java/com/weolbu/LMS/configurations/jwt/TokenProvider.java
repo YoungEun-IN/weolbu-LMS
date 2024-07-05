@@ -50,7 +50,6 @@ public class TokenProvider implements InitializingBean {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
-        log.info(authorities);
 
         long now = (new Date()).getTime();
         Date validity = new Date(now + validityInSeconds * 1000);
