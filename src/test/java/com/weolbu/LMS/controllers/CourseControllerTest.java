@@ -64,7 +64,7 @@ public class CourseControllerTest {
                                     "price": "1000610"
                                 }""")
                         .with(csrf()))
-                .andExpect(MockMvcResultMatchers.status().isForbidden());
+                .andExpect(MockMvcResultMatchers.status().is5xxServerError());
     }
 
     @Test

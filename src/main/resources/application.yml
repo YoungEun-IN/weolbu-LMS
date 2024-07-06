@@ -15,6 +15,9 @@ spring:
   sql:
     init:
       mode: always
+  redis:
+    host: 127.0.0.1
+    port: 6379
 jwt:
   secret: c3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwtc3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwtc3ByaW5nYm9vdC1qd3QtdHV0b3JpYWwK
   access-token-validity-in-seconds: 64800

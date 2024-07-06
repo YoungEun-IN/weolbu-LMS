@@ -3,7 +3,6 @@ package com.weolbu.LMS.services;
 import com.weolbu.LMS.dtos.SignupRequest;
 import com.weolbu.LMS.entities.Role;
 import com.weolbu.LMS.entities.Member;
-import com.weolbu.LMS.enums.MemberType;
 import com.weolbu.LMS.exceptions.DataNotFoundException;
 import com.weolbu.LMS.repositories.MemberRepository;
 import com.weolbu.LMS.repositories.RoleRepository;
@@ -13,8 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
@@ -29,14 +26,16 @@ public class MemberService {
     public void create(SignupRequest signupRequest) {
         validateEmail(signupRequest.getEmail());
 
-        Member member = Member.builder()
+        memberRepository.save(getMember(signupRequest));
+    }
+
+    private Member getMember(SignupRequest signupRequest) {
+        return Member.builder()
                 .email(signupRequest.getEmail())
                 .roles(Set.of(getRole(signupRequest)))
                 .name(signupRequest.getName())
                 .password(passwordEncoder.encode(signupRequest.getPassword()))
                 .build();
-
-        memberRepository.save(member);
     }
 
     private Role getRole(SignupRequest signupRequest) {

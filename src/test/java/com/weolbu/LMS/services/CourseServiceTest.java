@@ -13,16 +13,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.time.LocalDateTime;
-import java.time.Month;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.weolbu.LMS.fixtures.CourseFixture.createCourse;
+import static com.weolbu.LMS.fixtures.CourseFixture.createCourseResponsePage;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -61,24 +61,8 @@ public class CourseServiceTest {
     @DisplayName("강의 목록 조회 pageable 테스트")
     void getListTest1() {
         Pageable pageable = PageRequest.of(0, 1, Sort.Direction.DESC, "CREATED_DATE_TIME");
-        Page<CourseResponse> coursePage = new PageImpl<>(List.of(CourseResponse.builder()
-                .price(100L)
-                .name("강의1")
-                .maxEnrollment(10L)
-                .registrationCount(3L)
-                .registrationRate(0.3)
-                .createdDateTime(LocalDateTime.of(2024, Month.APRIL, 11, 10, 11))
-                .build(),
-                CourseResponse.builder()
-                .price(10L)
-                .name("강의2")
-                .maxEnrollment(10L)
-                .registrationCount(3L)
-                .registrationRate(0.3)
-                .createdDateTime(LocalDateTime.of(2024, Month.APRIL, 11, 11, 11))
-                .build()),pageable,2);
 
-        when(courseRepository.findAllBy(pageable)).thenReturn(coursePage);
+        when(courseRepository.findAllBy(pageable)).thenReturn(createCourseResponsePage(pageable));
 
         Page<CourseResponse> list = courseService.getList(pageable);
 
@@ -87,21 +71,34 @@ public class CourseServiceTest {
     }
 
     @Test
-    @DisplayName("강의 등록 테스트")
-    void enrollTest() {
+    @DisplayName("강의 등록 성공 테스트")
+    void enrollTest1() {
         String email = "test@example.com";
         List<Long> courseIdList = List.of(1L, 2L);
 
-        when(courseRepository.findById(anyLong())).thenReturn(Optional.of(Course.builder().build()));
+        when(courseRepository.findById(anyLong())).thenReturn(Optional.of(createCourse()));
 
         courseService.enroll(email, courseIdList);
 
         verify(registrationRepository, times(1)).saveAll(anyList());
     }
 
+
+    @Test
+    @DisplayName("강의 등록 최대 수강횟수 초과 시 실패 테스트")
+    public void enrollTest2() {
+        List<Long> courseIdList = Arrays.asList(1L, 2L);
+
+        when(courseRepository.findById(1L)).thenReturn(Optional.of(createCourse()));
+        when(courseRepository.findById(2L)).thenReturn(Optional.of(createCourse()));
+        when(registrationRepository.countByCourseId(1L)).thenReturn(10L);
+
+        assertThrows(IllegalStateException.class, () -> courseService.enroll(any(), courseIdList));
+    }
+
     @Test
     @DisplayName("강의 등록 시 존재하지 않는 강의 조회 시 예외 발생 테스트")
-    void getCoursesNotFoundTest() {
+    void buildCoursesNotFoundTest() {
         String email = "notfound@example.com";
         List<Long> courseIdList = List.of(1L, 2L);
 

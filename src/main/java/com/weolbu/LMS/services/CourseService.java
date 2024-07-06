@@ -3,11 +3,9 @@ package com.weolbu.LMS.services;
 import com.weolbu.LMS.dtos.CourseRequest;
 import com.weolbu.LMS.dtos.CourseResponse;
 import com.weolbu.LMS.entities.Course;
-import com.weolbu.LMS.entities.Member;
 import com.weolbu.LMS.entities.Registration;
 import com.weolbu.LMS.exceptions.DataNotFoundException;
 import com.weolbu.LMS.repositories.CourseRepository;
-import com.weolbu.LMS.repositories.MemberRepository;
 import com.weolbu.LMS.repositories.RegistrationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,19 +21,20 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CourseService {
-    private final MemberRepository memberRepository;
     private final CourseRepository courseRepository;
     private final RegistrationRepository registrationRepository;
 
     @Transactional
     public void create(CourseRequest courseRequest) {
-        Course course = Course.builder()
+        courseRepository.save(buildCourse(courseRequest));
+    }
+
+    private static Course buildCourse(CourseRequest courseRequest) {
+        return Course.builder()
                 .name(courseRequest.getName())
                 .maxEnrollment(courseRequest.getMaxEnrollment())
                 .price(courseRequest.getPrice())
                 .build();
-
-        courseRepository.save(course);
     }
 
     @Transactional(readOnly = true)
@@ -48,17 +47,24 @@ public class CourseService {
     public void enroll(String email, List<Long> courseIdList) {
         List<Registration> registrationList = new ArrayList<>();
         for (Course course : getCourses(courseIdList)) {
-            Registration registration = Registration.builder()
-                    .email(email)
-                    .course(course)
-                    .build();
-            registrationList.add(registration);
+            validateMaxEnrollment(course);
+            registrationList.add(buildRegistration(email, course));
         }
         registrationRepository.saveAll(registrationList);
     }
 
-    private Member getMember(String email) {
-        return memberRepository.findById(email).orElseThrow(() -> new DataNotFoundException("사용자가 존재하지 않습니다."));
+    private static Registration buildRegistration(String email, Course course) {
+        return Registration.builder()
+                .email(email)
+                .course(course)
+                .build();
+    }
+
+    private void validateMaxEnrollment(Course course) {
+        Long count = registrationRepository.countByCourseId(course.getId());
+        if (count > course.getMaxEnrollment()) {
+            throw new IllegalStateException("개수 초과");
+        }
     }
 
     private List<Course> getCourses(List<Long> courseIdList) {

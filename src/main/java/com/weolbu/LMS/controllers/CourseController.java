@@ -2,6 +2,7 @@ package com.weolbu.LMS.controllers;
 
 import com.weolbu.LMS.dtos.CourseRequest;
 import com.weolbu.LMS.dtos.CourseResponse;
+import com.weolbu.LMS.facade.RedissonLockCourseFacade;
 import com.weolbu.LMS.services.CourseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,6 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CourseController {
     private final CourseService courseService;
+    private final RedissonLockCourseFacade redissonLockCourseFacade;
 
     @ApiOperation(value = "강의 생성")
     @Secured("ROLE_LECTURER")
@@ -50,6 +52,6 @@ public class CourseController {
     @Secured({"ROLE_LECTURER", "ROLE_STUDENT"})
     @PostMapping("/enroll")
     public void enroll(@AuthenticationPrincipal User user, @RequestBody List<Long> courseIdList) {
-        courseService.enroll(user.getUsername(), courseIdList);
+        redissonLockCourseFacade.enroll(user.getUsername(), courseIdList);
     }
 }
