@@ -48,14 +48,14 @@ public class MemberController {
     long refreshTokenValidityInSecond;
 
 
-    @ApiOperation(value = "회원 생성", notes = "회원을 생성한다.")
+    @ApiOperation(value = "회원 생성")
     @PostMapping("")
     public ResponseEntity<String> create(@ApiParam(value = "회원", required = true) @RequestBody @Valid SignupRequest signupRequest) {
         memberService.create(signupRequest);
         return new ResponseEntity<>("회원 가입 완료되었습니다.", HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "이메일 중복 확인", notes = "이메일 중복을 확인한다.")
+    @ApiOperation(value = "이메일 중복 확인")
     @GetMapping("/validate")
     public ResponseEntity<String> create(@ApiParam(value = "이메일", required = true) String email) {
         memberService.validateEmail(email);
