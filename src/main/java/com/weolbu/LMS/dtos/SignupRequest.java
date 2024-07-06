@@ -1,16 +1,18 @@
 package com.weolbu.LMS.dtos;
 
-import com.weolbu.LMS.entities.Member;
 import com.weolbu.LMS.enums.MemberType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Getter
+@Builder
+@AllArgsConstructor
 @Setter
 @NoArgsConstructor
 public class SignupRequest {
