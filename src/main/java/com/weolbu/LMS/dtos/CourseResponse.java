@@ -20,5 +20,5 @@ public class CourseResponse {
     private Long price;
     private LocalDateTime createdDateTime;
     private Long registrationCount;
-    private Long registrationRate;
+    private Double registrationRate;
 }

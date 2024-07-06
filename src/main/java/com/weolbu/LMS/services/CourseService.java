@@ -49,7 +49,7 @@ public class CourseService {
         List<Registration> registrationList = new ArrayList<>();
         for (Course course : getCourses(courseIdList)) {
             Registration registration = Registration.builder()
-                    .member(getMember(email))
+                    .email(email)
                     .course(course)
                     .build();
             registrationList.add(registration);

@@ -25,9 +25,7 @@ public class Registration extends BaseDateEntity{
     @Column(name = "registration_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "email")
-    private Member member;
+    private String email;
 
     @ManyToOne
     @JoinColumn(name = "course_id")

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
 import static com.weolbu.LMS.entities.QCourse.course;
 import static com.weolbu.LMS.entities.QRegistration.registration;
 
@@ -33,7 +34,7 @@ public class CourseRepositoryCustomImpl implements CourseRepositoryCustom {
                         course.price,
                         course.createdDateTime,
                         registration.count().as("registrationCount"),
-                        registration.count().divide(course.maxEnrollment).as("registrationRate")))
+                        numberTemplate(Double.class, "({0} * 1.0) / {1}", registration.count(), course.maxEnrollment).as("registrationRate")))
                 .from(course)
                 .leftJoin(registration).on(course.id.eq(registration.course.id))
                 .groupBy(course.id)
