@@ -1,6 +1,7 @@
 package com.weolbu.LMS.controllers;
 
-import com.weolbu.LMS.dtos.CourseDto;
+import com.weolbu.LMS.dtos.CourseRequest;
+import com.weolbu.LMS.dtos.CourseResponse;
 import com.weolbu.LMS.services.CourseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,14 +31,14 @@ public class CourseController {
 
     @ApiOperation(value = "강의 생성")
     @PostMapping("")
-    public ResponseEntity<String> create(@ApiParam(value = "강의", required = true) @RequestBody @Valid CourseDto courseDto) {
-        courseService.create(courseDto);
+    public ResponseEntity<String> create(@ApiParam(value = "강의", required = true) @RequestBody @Valid CourseRequest courseRequest) {
+        courseService.create(courseRequest);
         return new ResponseEntity<>("강의가 생성되었습니다.", HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "강의목록조회")
     @GetMapping("")
-    public List<CourseDto> getList(Pageable pageable) {
+    public List<CourseResponse> getList(Pageable pageable) {
         return courseService.getList(pageable);
     }
 

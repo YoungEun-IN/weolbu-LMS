@@ -1,6 +1,7 @@
 package com.weolbu.LMS.services;
 
-import com.weolbu.LMS.dtos.CourseDto;
+import com.weolbu.LMS.dtos.CourseRequest;
+import com.weolbu.LMS.dtos.CourseResponse;
 import com.weolbu.LMS.entities.Course;
 import com.weolbu.LMS.entities.Member;
 import com.weolbu.LMS.entities.Registration;
@@ -26,21 +27,19 @@ public class CourseService {
     private final RegistrationRepository registrationRepository;
 
     @Transactional
-    public void create(CourseDto courseDto) {
+    public void create(CourseRequest courseRequest) {
         Course course = Course.builder()
-                .name(courseDto.getName())
-                .maxEnrollment(courseDto.getMaxEnrollment())
-                .price(courseDto.getPrice())
+                .name(courseRequest.getName())
+                .maxEnrollment(courseRequest.getMaxEnrollment())
+                .price(courseRequest.getPrice())
                 .build();
 
         courseRepository.save(course);
     }
 
     @Transactional(readOnly = true)
-    public List<CourseDto> getList(Pageable pageable) {
-        return courseRepository.findAll(pageable)
-                .stream().map(CourseDto::fromEntity)
-                .toList();
+    public List<CourseResponse> getList(Pageable pageable) {
+        return courseRepository.findAllBy(pageable);
 
     }
 
