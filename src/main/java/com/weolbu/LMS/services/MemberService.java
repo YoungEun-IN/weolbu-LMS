@@ -4,6 +4,7 @@ import com.weolbu.LMS.dtos.SignupRequest;
 import com.weolbu.LMS.entities.Role;
 import com.weolbu.LMS.entities.Member;
 import com.weolbu.LMS.enums.MemberType;
+import com.weolbu.LMS.exceptions.DataNotFoundException;
 import com.weolbu.LMS.repositories.MemberRepository;
 import com.weolbu.LMS.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,7 @@ public class MemberService {
 
     private Role getRole(SignupRequest signupRequest) {
         return roleRepository.findByMemberType(signupRequest.getMemberType())
-                .orElseThrow(() -> new IllegalArgumentException("Role을 찾을 수 없습니다."));
+                .orElseThrow(() -> new DataNotFoundException("Role을 찾을 수 없습니다."));
     }
 
     public void validateEmail(String email) {

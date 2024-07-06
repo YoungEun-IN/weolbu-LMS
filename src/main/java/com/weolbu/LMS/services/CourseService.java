@@ -38,7 +38,7 @@ public class CourseService {
 
     @Transactional(readOnly = true)
     public List<CourseDto> getList(Pageable pageable) {
-        return courseRepository.findAll()
+        return courseRepository.findAll(pageable)
                 .stream().map(CourseDto::fromEntity)
                 .toList();
 

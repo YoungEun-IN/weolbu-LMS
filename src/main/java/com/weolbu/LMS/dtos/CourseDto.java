@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -25,11 +26,14 @@ public class CourseDto {
     @NotNull
     private Long price;
 
+    private LocalDateTime createdDateTime;
+
     public static CourseDto fromEntity(Course course) {
         return CourseDto.builder()
                 .name(course.getName())
                 .maxEnrollment(course.getMaxEnrollment())
                 .price(course.getPrice())
+                .createdDateTime(course.getCreatedDateTime())
                 .build();
     }
 }
