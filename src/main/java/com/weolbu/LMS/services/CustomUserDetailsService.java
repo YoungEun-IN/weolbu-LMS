@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -15,22 +14,22 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component("userDetailsService")
+@Component
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(final String email) {
+    public User loadUserByUsername(final String email) {
         return memberRepository.findOneWithRolesByEmail(email)
-                .map(this::getUser)
+                .map(this::convertToUser)
                 .orElseThrow(() -> new UsernameNotFoundException(email + " -> 사용자를 찾을 수 없습니다."));
     }
 
-    private User getUser(Member member) {
+    private User convertToUser(Member member) {
         List<GrantedAuthority> grantedAuthorities = member.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getMemberType().toString()))
+                .map(role -> new SimpleGrantedAuthority("ROLE+" + role.getMemberType()))
                 .collect(Collectors.toList());
         return new User(member.getEmail(),
                 member.getPassword(),

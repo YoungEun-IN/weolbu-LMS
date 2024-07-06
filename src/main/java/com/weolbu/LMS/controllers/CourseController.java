@@ -12,7 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +33,7 @@ public class CourseController {
     private final CourseService courseService;
 
     @ApiOperation(value = "강의 생성")
+    @Secured("ROLE_LECTURER")
     @PostMapping("")
     public ResponseEntity<String> create(@ApiParam(value = "강의", required = true) @RequestBody @Valid CourseRequest courseRequest) {
         courseService.create(courseRequest);
@@ -44,8 +47,9 @@ public class CourseController {
     }
 
     @ApiOperation(value = "수강신청")
-    @GetMapping("/enroll")
-    public void enroll(@AuthenticationPrincipal String email, List<Long> courseIdList) {
-        courseService.enroll(email, courseIdList);
+    @Secured({"ROLE_LECTURER", "ROLE_STUDENT"})
+    @PostMapping("/enroll")
+    public void enroll(@AuthenticationPrincipal User user, @RequestBody List<Long> courseIdList) {
+        courseService.enroll(user.getUsername(), courseIdList);
     }
 }
