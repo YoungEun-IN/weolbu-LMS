@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class CourseController {
 
     @ApiOperation(value = "강의목록조회")
     @GetMapping("")
-    public List<CourseResponse> getList(Pageable pageable) {
+    public Page<CourseResponse> getList(Pageable pageable) {
         return courseService.getList(pageable);
     }
 

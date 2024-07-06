@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class CourseResponse {
     private Long id;
     private String name;
@@ -20,5 +20,5 @@ public class CourseResponse {
     private Long price;
     private LocalDateTime createdDateTime;
     private Long registrationCount;
-    private Double registrationRate;
+    private Long registrationRate;
 }

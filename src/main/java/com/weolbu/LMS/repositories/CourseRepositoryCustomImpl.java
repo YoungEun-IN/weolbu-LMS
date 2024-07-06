@@ -5,9 +5,10 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.weolbu.LMS.dtos.CourseResponse;
-import com.weolbu.LMS.enums.CourseSortType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
@@ -23,15 +24,16 @@ import static com.weolbu.LMS.entities.QRegistration.registration;
 public class CourseRepositoryCustomImpl implements CourseRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<CourseResponse> findAllBy(Pageable pageable) {
-        return jpaQueryFactory
+    public Page<CourseResponse> findAllBy(Pageable pageable) {
+        List<CourseResponse> courseResponseList = jpaQueryFactory
                 .select(Projections.constructor(CourseResponse.class,
                         course.id,
                         course.name,
                         course.maxEnrollment,
                         course.price,
                         course.createdDateTime,
-                        registration.count().as("registrationCount")),
+                        registration.count().as("registrationCount"),
+                        registration.count().divide(course.maxEnrollment).as("registrationRate")))
                 .from(course)
                 .leftJoin(registration).on(course.id.eq(registration.course.id))
                 .groupBy(course.id)
@@ -39,6 +41,13 @@ public class CourseRepositoryCustomImpl implements CourseRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .orderBy(createOrderSpecifier(pageable.getSort()))
                 .fetch();
+
+        long total = jpaQueryFactory
+                .select(course.id)
+                .from(course)
+                .fetchCount();
+
+        return new PageImpl<>(courseResponseList, pageable, total);
     }
 
     private OrderSpecifier<?> createOrderSpecifier(Sort sort) {
@@ -47,8 +56,7 @@ public class CourseRepositoryCustomImpl implements CourseRepositoryCustom {
         return switch (order.getProperty()) {
             case "CREATED_DATE_TIME" -> new OrderSpecifier<>(Order.DESC, course.createdDateTime);
             case "REGISTRATION_COUNT" -> new OrderSpecifier<>(Order.DESC, registration.count());
-            //case "REGISTRATION_RATE" -> new OrderSpecifier<>(Order.DESC, item.price);
-//            case DISCOUNT -> new OrderSpecifier<>(Order.DESC, item.discount);
+            case "REGISTRATION_RATE" -> new OrderSpecifier<>(Order.DESC, registration.count().divide(course.maxEnrollment));
             default -> new OrderSpecifier<>(Order.DESC, course.id);
         };
     }
