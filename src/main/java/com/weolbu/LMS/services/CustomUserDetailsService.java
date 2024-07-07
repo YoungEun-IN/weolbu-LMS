@@ -29,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private User convertToUser(Member member) {
         List<GrantedAuthority> grantedAuthorities = member.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE+" + role.getMemberType()))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getMemberType()))
                 .collect(Collectors.toList());
         return new User(member.getEmail(),
                 member.getPassword(),
