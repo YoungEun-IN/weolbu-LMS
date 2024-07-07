@@ -5,7 +5,6 @@ import com.weolbu.LMS.configurations.jwt.TokenProvider;
 import com.weolbu.LMS.dtos.LoginRequest;
 import com.weolbu.LMS.dtos.SignupRequest;
 import com.weolbu.LMS.dtos.TokenDto;
-import com.weolbu.LMS.entities.Member;
 import com.weolbu.LMS.exceptions.ExpiredRefreshTokenException;
 import com.weolbu.LMS.services.MemberService;
 import io.swagger.annotations.Api;
@@ -16,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 @Api(tags = {"Member"})
 @Slf4j
@@ -48,7 +45,13 @@ public class MemberController {
     long refreshTokenValidityInSecond;
 
 
-    @ApiOperation(value = "회원 생성")
+    @ApiOperation(value = "회원 가입")
+    @ApiParam(
+            name =  "firstName",
+            type = "String",
+            value = "First Name of the user",
+            example = "Vatsal",
+            required = true)
     @PostMapping("")
     public ResponseEntity<String> create(@ApiParam(value = "회원", required = true) @RequestBody @Valid SignupRequest signupRequest) {
         memberService.create(signupRequest);

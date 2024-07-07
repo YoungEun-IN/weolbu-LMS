@@ -1,7 +1,5 @@
 package com.weolbu.LMS.exceptions;
 
-import com.weolbu.LMS.exceptions.DataNotFoundException;
-import com.weolbu.LMS.exceptions.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,7 +11,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-//@ControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataNotFoundException.class)

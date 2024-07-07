@@ -43,6 +43,12 @@ public class CourseController {
     }
 
     @ApiOperation(value = "강의목록조회")
+    @ApiParam(
+            name =  "firstName",
+            type = "String",
+            value = "First Name of the user",
+            example = "Vatsal",
+            required = true)
     @GetMapping("")
     public Page<CourseResponse> getList(Pageable pageable) {
         return courseService.getList(pageable);
