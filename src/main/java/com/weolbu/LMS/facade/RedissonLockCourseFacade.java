@@ -19,10 +19,10 @@ public class RedissonLockCourseFacade {
     private final CourseService courseService;
 
     public void enroll(String email, List<Long> courseIdList) {
-        RLock lock = redissonClient.getLock(email);
+        RLock lock = redissonClient.getLock("key");
 
         try {
-            boolean available = lock.tryLock(10, 1, TimeUnit.SECONDS);
+            boolean available = lock.tryLock(2, 1, TimeUnit.SECONDS);
 
             if (!available) {
                 log.error("lock 획득 실패");

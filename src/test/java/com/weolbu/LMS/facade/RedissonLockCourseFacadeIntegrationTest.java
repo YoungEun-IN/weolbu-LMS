@@ -1,9 +1,9 @@
 package com.weolbu.LMS.facade;
 
 import com.weolbu.LMS.entities.Course;
-import com.weolbu.LMS.entities.Registration;
 import com.weolbu.LMS.repositories.CourseRepository;
 import com.weolbu.LMS.repositories.RegistrationRepository;
+import com.weolbu.LMS.services.CourseService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -21,13 +20,16 @@ import java.util.concurrent.Executors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-class RedissonLockStockFacadeTest {
+class RedissonLockCourseFacadeIntegrationTest {
 
     @Autowired
     private RedissonLockCourseFacade redissonLockCourseFacade;
 
-    @MockBean
+    @Autowired
     private RedissonClient redissonClient;
+
+    @Autowired
+    private CourseService courseService;
 
     @Autowired
     private CourseRepository courseRepository;
@@ -41,15 +43,9 @@ class RedissonLockStockFacadeTest {
                 .id(1L)
                 .price(10000L)
                 .name("강의1")
-                .maxEnrollment(100L)
+                .maxEnrollment(5L)
                 .build();
         courseRepository.saveAndFlush(course);
-
-        Registration registration = Registration.builder()
-                .email("test@gmail.com")
-                .course(course)
-                .build();
-        registrationRepository.saveAndFlush(registration);
     }
 
     @AfterEach
@@ -58,16 +54,17 @@ class RedissonLockStockFacadeTest {
     }
 
     @Test
-    @DisplayName("동시에 1000개 등록 요청 테스트")
+    @DisplayName("동시에 10개 등록 요청 시 5개만 등록되는지 테스트")
     public void lockTest() throws InterruptedException {
-        int threadCount = 1000;
+        int threadCount = 10;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
         CountDownLatch latch = new CountDownLatch(threadCount);
 
         for (int i = 0; i < threadCount; i++) {
+            int userId = i;
             executorService.submit(() -> {
                 try {
-                    redissonLockCourseFacade.enroll("test@gmail.com", List.of(1L));
+                    redissonLockCourseFacade.enroll(userId + "@gmail.com", List.of(1L));
                 } finally {
                     latch.countDown();
                 }
@@ -76,8 +73,6 @@ class RedissonLockStockFacadeTest {
 
         latch.await();
 
-        Registration registration = registrationRepository.findById(1L).orElseThrow();
-
-        assertEquals(100, registration.getCourse().getMaxEnrollment());
+        assertEquals(5, registrationRepository.countByCourseId(1L));
     }
 }

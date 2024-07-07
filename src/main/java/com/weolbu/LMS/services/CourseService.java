@@ -62,7 +62,7 @@ public class CourseService {
 
     private void validateMaxEnrollment(Course course) {
         Long count = registrationRepository.countByCourseId(course.getId());
-        if (count > course.getMaxEnrollment()) {
+        if (count >= course.getMaxEnrollment()) {
             throw new IllegalStateException("개수 초과");
         }
     }
