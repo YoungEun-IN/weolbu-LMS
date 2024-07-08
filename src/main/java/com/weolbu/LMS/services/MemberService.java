@@ -47,6 +47,5 @@ public class MemberService {
         if (memberRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("중복 이메일 입니다.");
         }
-        ;
     }
 }

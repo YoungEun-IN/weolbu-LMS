@@ -43,7 +43,6 @@ class MemberServiceTest {
     @Test
     @DisplayName("회원 생성 성공 테스트")
     void createTest() {
-        // Given
         SignupRequest signupRequest = new SignupRequest();
         signupRequest.setEmail("test@example.com");
         signupRequest.setName("Test User");
@@ -57,26 +56,21 @@ class MemberServiceTest {
         when(roleRepository.findByMemberType(any(MemberType.class))).thenReturn(Optional.of(role));
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
-        // When
         memberService.create(signupRequest);
 
-        // Then
         verify(memberRepository, times(1)).save(any(Member.class));
     }
 
     @Test
     @DisplayName("중복 이메일로 인한 회원 생성 실패 테스트")
     void createTest2() {
-        // Given
         SignupRequest signupRequest = new SignupRequest();
         signupRequest.setEmail("test@example.com");
 
         when(memberRepository.existsByEmail(anyString())).thenReturn(true);
 
-        // When & Then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            memberService.create(signupRequest);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+            memberService.create(signupRequest));
 
         assertEquals("중복 이메일 입니다.", exception.getMessage());
     }
@@ -84,7 +78,6 @@ class MemberServiceTest {
     @Test
     @DisplayName("존재하지 않는 Role로 인한 회원 생성 실패 테스트")
     void createTest3() {
-        // Given
         SignupRequest signupRequest = new SignupRequest();
         signupRequest.setEmail("test@example.com");
         signupRequest.setMemberType(MemberType.STUDENT);
@@ -92,7 +85,6 @@ class MemberServiceTest {
         when(memberRepository.existsByEmail(anyString())).thenReturn(false);
         when(roleRepository.findByMemberType(any(MemberType.class))).thenReturn(Optional.empty());
 
-        // When & Then
         DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
             memberService.create(signupRequest);
         });

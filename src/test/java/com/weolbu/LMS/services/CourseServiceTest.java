@@ -104,8 +104,7 @@ public class CourseServiceTest {
 
         when(courseRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(DataNotFoundException.class, () -> {
-            courseService.enroll(email, courseIdList);
-        });
+        assertThrows(DataNotFoundException.class, () ->
+            courseService.enroll(email, courseIdList));
     }
 }

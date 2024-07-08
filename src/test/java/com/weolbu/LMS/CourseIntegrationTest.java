@@ -67,7 +67,7 @@ public class CourseIntegrationTest {
                 .andExpect(jsonPath("$..content[0].registrationRate").value(0.2))
                 .andExpect(jsonPath("$..content[1].id").value(2))
                 .andExpect(jsonPath("$..content[1].registrationRate").value(0.2))
-                .andDo(print());;
+                .andDo(print());
     }
 
 }

@@ -123,8 +123,7 @@ public class MemberControllerTest {
 
         when(httpServletRequest.getHeader(anyString())).thenReturn("Bearer " + refreshToken);
 
-        assertThrows(ExpiredRefreshTokenException.class, () -> {
-            memberController.authorize(httpServletRequest);
-        });
+        assertThrows(ExpiredRefreshTokenException.class, () ->
+            memberController.authorize(httpServletRequest));
     }
 }
