@@ -1,5 +1,6 @@
 package com.weolbu.LMS.dtos;
 
+import com.weolbu.LMS.entities.Course;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,4 +24,12 @@ public class CourseRequest {
 
     @NotNull
     private Long price;
+
+    public static Course buildCourse(CourseRequest courseRequest) {
+        return Course.builder()
+                .name(courseRequest.getName())
+                .maxEnrollment(courseRequest.getMaxEnrollment())
+                .price(courseRequest.getPrice())
+                .build();
+    }
 }

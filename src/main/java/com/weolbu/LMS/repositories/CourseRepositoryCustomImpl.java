@@ -25,6 +25,7 @@ import static com.weolbu.LMS.entities.QRegistration.registration;
 public class CourseRepositoryCustomImpl implements CourseRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
+    @Override
     public Page<CourseResponse> findAllBy(Pageable pageable) {
         List<CourseResponse> courseResponseList = jpaQueryFactory
                 .select(Projections.constructor(CourseResponse.class,
@@ -36,7 +37,7 @@ public class CourseRepositoryCustomImpl implements CourseRepositoryCustom {
                         registration.count().as("registrationCount"),
                         numberTemplate(Double.class, "({0} * 1.0) / {1}", registration.count(), course.maxEnrollment).as("registrationRate")))
                 .from(course)
-                .leftJoin(registration).on(course.id.eq(registration.course.id))
+                .innerJoin(registration).on(course.id.eq(registration.course.id))
                 .groupBy(course.id)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

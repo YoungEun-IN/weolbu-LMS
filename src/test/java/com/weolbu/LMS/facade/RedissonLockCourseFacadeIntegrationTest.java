@@ -1,6 +1,5 @@
 package com.weolbu.LMS.facade;
 
-import com.weolbu.LMS.entities.Course;
 import com.weolbu.LMS.repositories.CourseRepository;
 import com.weolbu.LMS.repositories.RegistrationRepository;
 import com.weolbu.LMS.services.CourseService;
@@ -17,6 +16,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.weolbu.LMS.fixtures.CourseFixture.createCourse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -39,13 +39,7 @@ class RedissonLockCourseFacadeIntegrationTest {
 
     @BeforeEach
     public void insert() {
-        Course course = Course.builder()
-                .id(1L)
-                .price(10000L)
-                .name("강의1")
-                .maxEnrollment(5L)
-                .build();
-        courseRepository.saveAndFlush(course);
+        courseRepository.saveAndFlush(createCourse());
     }
 
     @AfterEach

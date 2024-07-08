@@ -37,18 +37,12 @@ public class CourseController {
     @ApiOperation(value = "강의 생성")
     @Secured("ROLE_LECTURER")
     @PostMapping("")
-    public ResponseEntity<String> create(@ApiParam(value = "강의", required = true) @RequestBody @Valid CourseRequest courseRequest) {
+    public ResponseEntity<String> create(@ApiParam(value = "강의 요청 바디", required = true) @RequestBody @Valid CourseRequest courseRequest) {
         courseService.create(courseRequest);
         return new ResponseEntity<>("강의가 생성되었습니다.", HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "강의목록조회")
-    @ApiParam(
-            name =  "firstName",
-            type = "String",
-            value = "First Name of the user",
-            example = "Vatsal",
-            required = true)
     @GetMapping("")
     public Page<CourseResponse> getList(Pageable pageable) {
         return courseService.getList(pageable);

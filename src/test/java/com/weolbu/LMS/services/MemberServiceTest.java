@@ -42,7 +42,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("회원 생성 성공 테스트")
-    void create_Success() {
+    void createTest() {
         // Given
         SignupRequest signupRequest = new SignupRequest();
         signupRequest.setEmail("test@example.com");
@@ -66,7 +66,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("중복 이메일로 인한 회원 생성 실패 테스트")
-    void create_Fail_DuplicateEmail() {
+    void createTest2() {
         // Given
         SignupRequest signupRequest = new SignupRequest();
         signupRequest.setEmail("test@example.com");
@@ -83,7 +83,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("존재하지 않는 Role로 인한 회원 생성 실패 테스트")
-    void create_Fail_RoleNotFound() {
+    void createTest3() {
         // Given
         SignupRequest signupRequest = new SignupRequest();
         signupRequest.setEmail("test@example.com");

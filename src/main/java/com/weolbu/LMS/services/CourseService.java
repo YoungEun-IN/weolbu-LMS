@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.weolbu.LMS.dtos.CourseRequest.buildCourse;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,14 +29,6 @@ public class CourseService {
     @Transactional
     public void create(CourseRequest courseRequest) {
         courseRepository.save(buildCourse(courseRequest));
-    }
-
-    private static Course buildCourse(CourseRequest courseRequest) {
-        return Course.builder()
-                .name(courseRequest.getName())
-                .maxEnrollment(courseRequest.getMaxEnrollment())
-                .price(courseRequest.getPrice())
-                .build();
     }
 
     @Transactional(readOnly = true)
@@ -63,7 +57,7 @@ public class CourseService {
     private void validateMaxEnrollment(Course course) {
         Long count = registrationRepository.countByCourseId(course.getId());
         if (count >= course.getMaxEnrollment()) {
-            throw new IllegalStateException("개수 초과");
+            throw new IllegalStateException("쵀대 등록 횟수 초과되었습니다.");
         }
     }
 

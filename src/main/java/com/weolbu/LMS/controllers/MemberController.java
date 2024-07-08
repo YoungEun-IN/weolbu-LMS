@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,14 +54,14 @@ public class MemberController {
             example = "Vatsal",
             required = true)
     @PostMapping("")
-    public ResponseEntity<String> create(@ApiParam(value = "회원", required = true) @RequestBody @Valid SignupRequest signupRequest) {
+    public ResponseEntity<String> create(@ApiParam(value = "회원가입 요청바디", required = true) @RequestBody @Valid SignupRequest signupRequest) {
         memberService.create(signupRequest);
         return new ResponseEntity<>("회원 가입 완료되었습니다.", HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "이메일 중복 확인")
     @GetMapping("/validate")
-    public ResponseEntity<String> create(@ApiParam(value = "이메일", required = true) String email) {
+    public ResponseEntity<String> create(@ApiParam(value = "이메일", required = true) @RequestParam String email) {
         memberService.validateEmail(email);
         return new ResponseEntity<>("사용 가능한 이메일입니다.", HttpStatus.OK);
     }
