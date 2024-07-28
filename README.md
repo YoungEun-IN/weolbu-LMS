@@ -1,5 +1,8 @@
 # 월부 학습 관리 앱
 
+![KakaoTalk_Photo_2024-07-28-20-51-12](https://github.com/user-attachments/assets/8d1f33de-a238-4a12-b5a7-648933c5f68a)
+
+
 ## 1. 구현 범위에 대한 설명
 
 1. **회원 정보를 입력받아 저장**하는 API
